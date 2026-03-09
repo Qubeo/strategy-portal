@@ -403,6 +403,29 @@
   .status-in-progress { color: var(--amber-400); background: rgba(251,191,36,0.1); }
   .status-outline     { color: var(--slate-400); background: rgba(255,255,255,0.05); }
 
+  .edit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-600);
+    text-decoration: none;
+    border: 1px solid var(--slate-700);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    transition: all 0.2s;
+  }
+
+  .edit-link:hover {
+    color: var(--teal-400);
+    border-color: rgba(20,184,166,0.3);
+    background: rgba(20,184,166,0.04);
+  }
+
   .collapsible-body {
     max-height: 0;
     overflow: hidden;
@@ -1077,6 +1100,13 @@ function buildView(groups, container) {
             .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
             .then(md => {
               content.innerHTML = marked.parse(md);
+              const editUrl = 'https://github.com/Qubeo/strategy-portal/edit/draft/docs/sections/' + content.dataset.file;
+              content.insertAdjacentHTML('beforeend',
+                `<a class="edit-link" href="${editUrl}" target="_blank">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit on GitHub (draft)
+                </a>`
+              );
               content.dataset.loaded = '1';
             })
             .catch(() => {
