@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regenerative Digital Ecosystems — DigiHub Liechtenstein</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --slate-950: #0a0f1a;
+    --slate-900: #0f172a;
+    --slate-800: #1a2332;
+    --slate-700: #2a3548;
+    --slate-600: #3d4f65;
+    --slate-400: #8899ad;
+    --slate-300: #a8b8c8;
+    --slate-200: #c8d4df;
+    --slate-100: #e8edf2;
+    --slate-50: #f4f6f8;
+    --teal-600: #0d9488;
+    --teal-500: #14b8a6;
+    --teal-400: #2dd4bf;
+    --teal-300: #5eead4;
+    --teal-200: #99f6e4;
+    --warm-100: #faf5f0;
+    --warm-200: #f0e6d8;
+    --amber-400: #fbbf24;
+
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --max-w: 860px;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    font-size: 17px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--slate-950);
+    color: var(--slate-200);
+    line-height: 1.72;
+    overflow-x: hidden;
+  }
+
+  /* =========== SHADER CANVAS =========== */
+  #shader-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* =========== HEADER / NAV =========== */
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    background: rgba(10, 15, 26, 0.7);
+    border-bottom: 1px solid rgba(20, 184, 166, 0.08);
+    transition: all 0.4s var(--ease-out-expo);
+  }
+
+  .site-header.scrolled {
+    padding: 0.8rem 2rem;
+    background: rgba(10, 15, 26, 0.92);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--teal-500), var(--teal-300));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--slate-950);
+    font-weight: 700;
+  }
+
+  .logo-text {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate-400);
+    font-weight: 300;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0.25rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .nav-tab {
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--slate-400);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-tab:hover {
+    color: var(--slate-200);
+  }
+
+  .nav-tab.active {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--teal-400);
+  }
+
+  .version-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--slate-600);
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--slate-700);
+    border-radius: 6px;
+  }
+
+  /* =========== HERO =========== */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 2rem 4rem;
+  }
+
+  .hero-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: 1.8rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    line-height: 1.12;
+    color: var(--slate-50);
+    font-weight: 400;
+    margin-bottom: 0.6rem;
+    opacity: 0;
+    animation: fadeSlideUp 1s var(--ease-out-expo) 0.5s forwards;
+  }
+
+  .hero-title em {
+    color: var(--teal-400);
+    font-style: italic;
+  }
+
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--slate-400);
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeSlideUp 1s var(--ease-out-expo) 0.7s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--slate-600);
+    opacity: 0;
+    animation: fadeSlideUp 0.8s var(--ease-out-expo) 1s forwards;
+  }
+
+  .hero-meta a {
+    color: var(--teal-500);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(20,184,166,0.3);
+    transition: border-color 0.2s;
+  }
+
+  .hero-meta a:hover { border-color: var(--teal-400); }
+
+  .hero-divider {
+    width: 100%;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal-500), transparent);
+    opacity: 0.2;
+    animation: fadeIn 1.2s var(--ease-out-expo) 1.2s forwards;
+    opacity: 0;
+  }
+
+  /* =========== ONE MINUTE SUMMARY =========== */
+  .summary-section {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(20,184,166,0.02));
+    border: 1px solid rgba(20,184,166,0.12);
+    border-radius: 16px;
+    padding: 2.5rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--teal-400), var(--teal-600));
+    border-radius: 4px 0 0 4px;
+  }
+
+  .summary-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: 1rem;
+  }
+
+  .summary-text {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--slate-100);
+  }
+
+  /* =========== CONTENT SECTIONS =========== */
+  .content-area {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 2rem 2rem 8rem;
+  }
+
+  .section-group {
+    margin-bottom: 4rem;
+  }
+
+  .section-group-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--slate-800);
+  }
+
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    background: rgba(20,184,166,0.08);
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .section-group-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--slate-50);
+    font-weight: 400;
+  }
+
+  /* Collapsible sections */
+  .collapsible {
+    margin-bottom: 1px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s var(--ease-out-expo);
+  }
+
+  .collapsible + .collapsible {
+    margin-top: 2px;
+  }
+
+  .collapsible-trigger {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.3rem 1.5rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--slate-200);
+    font-family: var(--font-body);
+    transition: all 0.3s var(--ease-out-expo);
+  }
+
+  .collapsible.open .collapsible-trigger {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(20,184,166,0.12);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .collapsible-trigger:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  .collapsible-icon {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+
+  .collapsible.open .collapsible-icon {
+    transform: rotate(90deg);
+  }
+
+  .collapsible-icon svg {
+    width: 14px; height: 14px;
+    stroke: var(--teal-500);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .collapsible-header {
+    flex: 1;
+  }
+
+  .collapsible-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--slate-100);
+    margin-bottom: 0.3rem;
+  }
+
+  .collapsible-preview {
+    font-size: 0.85rem;
+    color: var(--slate-400);
+    line-height: 1.5;
+  }
+
+  .collapsible-status {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  .status-draft {
+    color: var(--amber-400);
+    background: rgba(251,191,36,0.1);
+  }
+
+  .status-ready {
+    color: var(--teal-400);
+    background: rgba(20,184,166,0.1);
+  }
+
+  .status-outline {
+    color: var(--slate-400);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .collapsible-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s var(--ease-out-expo);
+    background: rgba(255,255,255,0.015);
+    border-left: 1px solid rgba(20,184,166,0.12);
+    border-right: 1px solid rgba(20,184,166,0.06);
+    border-bottom: 1px solid rgba(20,184,166,0.06);
+    border-radius: 0 0 12px 12px;
+  }
+
+  .collapsible.open .collapsible-body {
+    max-height: 5000px;
+  }
+
+  .collapsible-content {
+    padding: 1.5rem 1.5rem 2rem 3.5rem;
+  }
+
+  .collapsible-content p {
+    margin-bottom: 1rem;
+    color: var(--slate-300);
+    font-size: 0.95rem;
+  }
+
+  .collapsible-content p:last-child { margin-bottom: 0; }
+
+  .collapsible-content h4 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--slate-100);
+    margin: 1.8rem 0 0.8rem;
+    font-weight: 400;
+  }
+
+  .collapsible-content h4:first-child { margin-top: 0; }
+
+  .collapsible-content ul {
+    padding-left: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .collapsible-content li {
+    color: var(--slate-300);
+    font-size: 0.92rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.6;
+  }
+
+  .collapsible-content li::marker {
+    color: var(--teal-500);
+  }
+
+  .content-quote {
+    border-left: 2px solid var(--teal-500);
+    padding: 0.8rem 1.2rem;
+    margin: 1.2rem 0;
+    background: rgba(20,184,166,0.04);
+    border-radius: 0 8px 8px 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--slate-200);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .ref-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+    background: rgba(20,184,166,0.08);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin: 0.2rem 0.2rem 0.2rem 0;
+    vertical-align: middle;
+  }
+
+  /* Placeholder for diagrams */
+  .diagram-placeholder {
+    border: 1px dashed var(--slate-700);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+    background: rgba(255,255,255,0.01);
+  }
+
+  .diagram-placeholder-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--slate-600);
+    margin-bottom: 0.5rem;
+  }
+
+  .diagram-placeholder-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--slate-400);
+    font-size: 0.95rem;
+  }
+
+  /* POD Grid */
+  .pod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    margin: 1.2rem 0;
+  }
+
+  .pod-chip {
+    padding: 0.6rem 0.8rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--slate-300);
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .pod-chip:hover {
+    border-color: rgba(20,184,166,0.2);
+    background: rgba(20,184,166,0.05);
+  }
+
+  .pod-chip .pod-emoji {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+  }
+
+  /* Framework cards (methodology view) */
+  .framework-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 1.2rem 0;
+  }
+
+  .framework-card {
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    transition: all 0.3s;
+  }
+
+  .framework-card:hover {
+    border-color: rgba(20,184,166,0.15);
+    background: rgba(20,184,166,0.03);
+  }
+
+  .framework-card-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--slate-100);
+    margin-bottom: 0.4rem;
+  }
+
+  .framework-card-desc {
+    font-size: 0.8rem;
+    color: var(--slate-400);
+    line-height: 1.5;
+  }
+
+  /* Flywheel stages */
+  .flywheel-stage {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.015);
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s;
+  }
+
+  .flywheel-stage:hover {
+    background: rgba(255,255,255,0.03);
+    border-left-color: var(--teal-500);
+  }
+
+  .flywheel-number {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20,184,166,0.1);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--teal-400);
+    font-weight: 700;
+  }
+
+  .flywheel-content h5 {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--slate-100);
+    margin-bottom: 0.3rem;
+    font-weight: 400;
+  }
+
+  .flywheel-content p {
+    font-size: 0.82rem !important;
+    color: var(--slate-400) !important;
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+  }
+
+  .flywheel-content .flywheel-timeframe {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--teal-500);
+    letter-spacing: 0.08em;
+  }
+
+  /* Vocab table */
+  .vocab-table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+  }
+
+  .vocab-table td {
+    padding: 0.8rem 1rem;
+    background: rgba(255,255,255,0.02);
+    font-size: 0.88rem;
+    vertical-align: top;
+  }
+
+  .vocab-table td:first-child {
+    border-radius: 8px 0 0 8px;
+    width: 30%;
+    font-family: var(--font-display);
+    color: var(--teal-300);
+    font-size: 0.92rem;
+  }
+
+  .vocab-table td:last-child {
+    border-radius: 0 8px 8px 0;
+    color: var(--slate-300);
+  }
+
+  /* =========== FOOTER =========== */
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--slate-800);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--slate-600);
+  }
+
+  .footer-text a {
+    color: var(--teal-500);
+    text-decoration: none;
+  }
+
+  /* =========== ANIMATIONS =========== */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 0.2; }
+  }
+
+  /* Section reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* =========== RESPONSIVE =========== */
+  @media (max-width: 768px) {
+    html { font-size: 15px; }
+    .hero { padding: 7rem 1.2rem 3rem; }
+    .content-area, .summary-section { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .summary-box { padding: 1.8rem 1.5rem; }
+    .collapsible-content { padding-left: 2.5rem; }
+    .framework-grid { grid-template-columns: 1fr; }
+    .nav-tabs { display: none; }
+    .version-badge { display: none; }
+    .site-footer { flex-direction: column; text-align: center; }
+    .pod-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+
+  /* =========== SCROLL INDICATOR =========== */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal-500), var(--teal-300));
+    z-index: 200;
+    transition: width 0.1s linear;
+    width: 0%;
+  }
+
+  /* View transitions */
+  .view-container {
+    transition: opacity 0.4s var(--ease-out-expo);
+  }
+
+  .view-container.hidden {
+    display: none;
+  }
+
+  /* Commons domain cards */
+  .commons-domain {
+    padding: 1.2rem 1.4rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s;
+  }
+
+  .commons-domain:hover {
+    border-color: rgba(20,184,166,0.12);
+  }
+
+  .commons-domain.energy { background: rgba(34,197,94,0.04); border-left: 3px solid rgba(34,197,94,0.4); }
+  .commons-domain.data { background: rgba(59,130,246,0.04); border-left: 3px solid rgba(59,130,246,0.4); }
+  .commons-domain.logistics { background: rgba(249,115,22,0.04); border-left: 3px solid rgba(249,115,22,0.4); }
+
+  .commons-domain h5 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--slate-100);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .commons-domain p {
+    font-size: 0.85rem !important;
+    line-height: 1.55 !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<canvas id="shader-canvas"></canvas>
+
+<header class="site-header" id="siteHeader">
+  <div class="logo-area">
+    <div class="logo-mark">d</div>
+    <span class="logo-text">digihub.li · Position Paper</span>
+  </div>
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-view="paper">Position Paper</button>
+    <button class="nav-tab" data-view="methodology">Methodology</button>
+  </div>
+  <span class="version-badge">v0.1 · Living Document</span>
+</header>
+
+<!-- =================== PAPER VIEW =================== -->
+<div class="view-container" id="view-paper">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-kicker">Strategic Position Paper · DigiHub Liechtenstein EDIH</div>
+      <h1 class="hero-title">Regenerative<br>Digital <em>Ecosystems</em></h1>
+      <p class="hero-subtitle">A strategic position for bioregional digital sovereignty — from extraction to circulation, from dependency to collective capability.</p>
+      <div class="hero-meta">
+        <span>DigiHub Liechtenstein</span>
+        <span>·</span>
+        <a href="https://digihub.li" target="_blank">digihub.li</a>
+        <span>·</span>
+        <span>EDIH Network</span>
+        <span>·</span>
+        <span>February 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="hero-divider"></div>
+
+  <section class="summary-section reveal">
+    <div class="summary-box">
+      <div class="summary-label">In One Minute</div>
+      <p class="summary-text">
+        Digital sovereignty, when pursued in isolation, produces fragmentation. When embedded within a regenerative economic paradigm and enacted through commons-based institutional innovation, it becomes the foundation for a fundamentally different kind of digital ecosystem — one that builds collective capability rather than extracting individual value. The DigiHub Liechtenstein, operating within the European Digital Innovation Hub network, is prototyping this approach at bioregional scale. Through Programmable Organizational Domains, commons-based infrastructure, and collaborative finance mechanisms, it demonstrates that small, agile jurisdictions can serve as laboratories for institutional patterns that are globally replicable. The question is not whether to pursue digital sovereignty, but <em>what kind of economy</em> sovereignty serves.
+      </p>
+    </div>
+  </section>
+
+  <main class="content-area">
+
+    <!-- ===== SECTION I: WHY ===== -->
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">Section I</span>
+        <h2 class="section-group-title">Why — The Sovereignty-Regeneration Nexus</h2>
+      </div>
+
+      <div class="collapsible" data-section="1.1">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">1.1 The Dependency Crisis</div>
+            <div class="collapsible-preview">Why digital infrastructure as extractive monoculture creates existential risk — and why "sovereignty" alone is insufficient.</div>
+          </div>
+          <span class="collapsible-status status-ready">Draft</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>There is a moment in every dependency crisis when an organization realizes it has been building on someone else's land. The cloud provider changes terms. The software vendor pivots. The critical service gets acquired. Choices made in procurement meetings years ago become existential threats.</p>
+            <p>This is the sovereignty moment — when abstraction becomes concrete, when "strategic autonomy" shifts from policy document to operational imperative. Across Europe, municipalities, SMEs, and public institutions are confronting a landscape of digital dependencies that was assembled incrementally but now constitutes a structural vulnerability.</p>
+            <p>Yet most conversations about digital sovereignty happen, as Simon Wardley observes, <em>without maps</em>. They are storytelling exercises disconnected from the actual landscape of dependencies and evolution — equivalent to generals trying to win a war by giving it the right name. Without situational awareness of what we depend on, how those dependencies are evolving, and where our leverage actually lies, sovereignty remains an aspiration rather than a strategy.</p>
+
+            <div class="diagram-placeholder">
+              <div class="diagram-placeholder-label">Diagram Placeholder</div>
+              <div class="diagram-placeholder-title">Wardley Map: Digital dependency landscape of a bioregional entity</div>
+            </div>
+
+            <p>The deeper problem is that sovereignty, even when pursued with maps and strategic clarity, requires an economic paradigm to inhabit. Sovereignty <em>from</em> extractive platforms is necessary — but sovereignty <em>for what</em>? Without answering this question, digital sovereignty risks becoming a protectionist reflex rather than a generative project.</p>
+
+            <div class="ref-tag">Wardley 2020, 2025</div>
+            <div class="ref-tag">Lens-FitzGerald 2025</div>
+            <div class="ref-tag">Public Digital 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="1.2">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">1.2 From Sovereignty to Self-Determination</div>
+            <div class="collapsible-preview">Sovereignty as relational, not isolationist. The Self / Together / Others framework. Digital self-determination as increasing autonomy.</div>
+          </div>
+          <span class="collapsible-status status-ready">Draft</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>Sovereignty is fundamentally different from independence. It is inherently relational, not isolationist. Medieval guilds understood something we have forgotten: mastery compounds through community, not competition. A guild member was sovereign not because they worked alone, but because they belonged to a network of mutual obligation, shared standards, and collective capability that no single patron could destroy.</p>
+            <p>The Dutch government's digital stack model and Ton Zijlstra's framework reveal that the strategic question is not "do everything yourself" — it is a three-way choice:</p>
+            <ul>
+              <li><strong>Self</strong> — Layers core to organizational identity where dependency creates existential risk.</li>
+              <li><strong>Together</strong> — Layers with shared requirements, where collective capability exceeds individual capacity.</li>
+              <li><strong>Others</strong> — Layers sufficiently commoditized where vendor competition keeps quality high.</li>
+            </ul>
+            <p>The sovereignty movement's purpose is expanding the "Together" category — building collective capability where dependency creates vulnerability but individual action is inefficient.</p>
+            <p>Igor Calzada's research identifies three overlapping layers through which sovereignty can be enacted: <em>institutional sovereignty</em>, embedded in public agencies and organizations; <em>cooperative sovereignty</em>, realized through federated data cooperatives and trusts; and <em>geopolitical sovereignty</em>, enacted through interregional alliances and standards. This multi-layered framing moves beyond the binary of "sovereign or dependent" toward a nuanced architecture of graduated autonomy.</p>
+            <p>We therefore prefer the framing of <strong>digital self-determination</strong> — the capacity of individuals, organizations, and communities to make meaningful choices about their digital infrastructure, data, and economic participation. Self-determination implies agency within relationship, not isolation.</p>
+
+            <div class="ref-tag">Calzada 2025</div>
+            <div class="ref-tag">Zijlstra / Dutch Gov</div>
+            <div class="ref-tag">Lens-FitzGerald 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="1.3">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">1.3 The Regenerative Paradigm</div>
+            <div class="collapsible-preview">Why regenerative economics — not just "sustainable" — provides the economic paradigm that sovereignty needs.</div>
+          </div>
+          <span class="collapsible-status status-draft">In progress</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>Sustainability asks: <em>how do we do less damage?</em> Regeneration asks: <em>how do we design systems that become healthier through use?</em> This distinction matters for digital infrastructure because it reframes the goal from mitigating harm (data protection, reducing lock-in) to designing for systemic vitality (building collective capability, creating commons dividends).</p>
+            <p>Three intellectual traditions converge to form the regenerative digital ecosystem paradigm:</p>
+            <h4>Doughnut Economics as normative compass</h4>
+            <p>Kate Raworth's framework establishes the design space: a social foundation of human needs below which no one should fall, and an ecological ceiling above which planetary boundaries are breached. A regenerative digital ecosystem operates within this doughnut — ensuring digital infrastructure serves social foundations while respecting ecological limits.</p>
+            <h4>Commons governance as institutional logic</h4>
+            <p>Elinor Ostrom's research demonstrated that communities can govern shared resources sustainably when institutional arrangements match the resource's characteristics. Her design principles — clearly defined boundaries, collective-choice arrangements, monitoring, graduated sanctions, conflict-resolution mechanisms, nested governance — provide the institutional blueprint for governing digital commons.</p>
+            <h4>Bioregionalism as operational scale</h4>
+            <p>Bioregional self-sufficiency and self-determination necessitate rebuilding production capacities, upscaling resource coordination, and establishing bioregional institutions and currencies. The bioregion — defined by ecological and cultural boundaries rather than administrative ones — provides the operational scale at which regenerative digital ecosystems become tangible.</p>
+
+            <div class="content-quote">
+              The convergence: sovereignty + regeneration + commons = Regenerative Digital Ecosystem. A bioregional digital infrastructure and institutional arrangement designed to build collective capability, governed as commons, operating within ecological and social boundaries.
+            </div>
+
+            <div class="ref-tag">Raworth 2017</div>
+            <div class="ref-tag">Ostrom 1990</div>
+            <div class="ref-tag">Bioregional economics</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="1.4">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">1.4 The Zeitgeist Moment</div>
+            <div class="collapsible-preview">Geopolitical context, the EU Digital Decade, and why small states and bioregions are uniquely positioned as laboratories.</div>
+          </div>
+          <span class="collapsible-status status-outline">Outline</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>We are living through a sovereignty awakening. Geopolitical tensions, platform monopolization, supply chain fragility, and data colonialism have made digital dependency visible in new ways. The rise of generative AI has accelerated this awareness — as Calzada warns, GenAI exacerbates concentration and asymmetry, creating "data-opolies" that undermine democratic accountability and trust.</p>
+            <p><em>[To be expanded: EU Digital Decade targets, EDIH network as institutional infrastructure, the specific window of opportunity for small states, the AI sovereignty question]</em></p>
+
+            <div class="ref-tag">EU Digital Decade</div>
+            <div class="ref-tag">Calzada 2025</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION II: WHAT ===== -->
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">Section II</span>
+        <h2 class="section-group-title">What — The Regenerative Digital Ecosystem Model</h2>
+      </div>
+
+      <div class="collapsible" data-section="2.1">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">2.1 Model Overview</div>
+            <div class="collapsible-preview">The architecture of a regenerative digital ecosystem: institutional layer, infrastructure layer, economic layer.</div>
+          </div>
+          <span class="collapsible-status status-outline">Outline</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+
+            <div class="diagram-placeholder">
+              <div class="diagram-placeholder-label">Core Diagram</div>
+              <div class="diagram-placeholder-title">The Regenerative Digital Ecosystem — three-layer architecture</div>
+            </div>
+
+            <p>The model operates across three interdependent layers:</p>
+            <ul>
+              <li><strong>Institutional Layer</strong> — Programmable Organizational Domains (PODs) as the organizational primitives, governed through commons principles, nested from individual to bioregional scale.</li>
+              <li><strong>Infrastructure Layer</strong> — Decentralized identifiers, end-to-end encrypted collaboration spaces, AI oracle services, and interoperable protocols — civic protocol infrastructure, not platform lock-in.</li>
+              <li><strong>Economic Layer</strong> — Collaborative finance mechanisms, tokenized coordination, outcome-based funding, and commons dividends — economic patterns that circulate rather than extract value.</li>
+            </ul>
+            <p><em>[To be expanded: how the three layers interact, the design principles governing each, the relationship to the Self/Together/Others framework]</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="2.2">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">2.2 Programmable Organizational Domains</div>
+            <div class="collapsible-preview">PODs as institutional primitives — new organizational forms that embody the paradigm at every scale.</div>
+          </div>
+          <span class="collapsible-status status-draft">In progress</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>A Programmable Organizational Domain is not a product — it is an institutional primitive. A POD enables any entity to establish a sovereign digital presence, manage its data and economic participation, and connect to a commons-based ecosystem — all governed by protocols rather than platforms.</p>
+            <p>The core value proposition: <em>"Have a digital twin of your organization. We provide secure data, local AI."</em> But this framing, while useful for adoption, understates the structural significance. PODs represent a new category of institutional form — modular, composable, and governed by their participants.</p>
+
+            <h4>The POD Typology</h4>
+            <div class="pod-grid">
+              <div class="pod-chip"><span class="pod-emoji">👤</span>Citizen</div>
+              <div class="pod-chip"><span class="pod-emoji">👨‍👩‍👧</span>Family</div>
+              <div class="pod-chip"><span class="pod-emoji">🤝</span>Coop</div>
+              <div class="pod-chip"><span class="pod-emoji">🌾</span>Farm</div>
+              <div class="pod-chip"><span class="pod-emoji">🏛️</span>Association</div>
+              <div class="pod-chip"><span class="pod-emoji">🏢</span>SME</div>
+              <div class="pod-chip"><span class="pod-emoji">🏘️</span>Municipality</div>
+              <div class="pod-chip"><span class="pod-emoji">🌍</span>Land-Based</div>
+              <div class="pod-chip"><span class="pod-emoji">🇱🇮</span>Liechtenstein</div>
+              <div class="pod-chip"><span class="pod-emoji">🏔️</span>Bioregional</div>
+              <div class="pod-chip"><span class="pod-emoji">🎪</span>Event</div>
+            </div>
+
+            <p>This typology is not arbitrary — it maps the full spectrum of organizational life in a bioregion, from the individual citizen to the bioregional whole. Each POD type instantiates the Self/Together/Others logic at its own scale, with its own governance protocols and data boundaries. The nesting pattern — citizens within families, families within municipalities, municipalities within bioregions — mirrors Ostrom's principle of nested governance for commons management.</p>
+
+            <p><em>[To be expanded: detailed architecture of a POD, governance protocols, how PODs interact across scales, connection to DID infrastructure]</em></p>
+
+            <div class="ref-tag">Ostrom — Nested Governance</div>
+            <div class="ref-tag">Calzada — Data Cooperatives</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="2.3">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">2.3 Commons Domains: Energy, Data, Logistics</div>
+            <div class="collapsible-preview">Sectoral verticals reframed as shared resources requiring collective governance.</div>
+          </div>
+          <span class="collapsible-status status-outline">Outline</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <div class="commons-domain energy">
+              <h5>🟢 Energy Commons</h5>
+              <p>Microgrids, peer-to-peer energy trading, tokenized energy credits, and dynamic grid balancing through real-time incentives. In the Alpine bioregion, this connects to hydro, solar, and wind assets. The energy commons is where digital and physical sovereignty intersect most tangibly — and where the DigiHub has identified its first onboarding entry point.</p>
+            </div>
+
+            <div class="commons-domain data">
+              <h5>🔵 Data Commons</h5>
+              <p>Sovereign data economies where individuals and organizations control and monetize their data. Decentralized identifiers, verifiable credentials, and privacy-preserving data sharing through zero-knowledge proofs. The immediate entry point: enabling organizations to control their AI-driven representation through LLM fact sheets — making the abstract problem of data sovereignty concrete and actionable.</p>
+            </div>
+
+            <div class="commons-domain logistics">
+              <h5>🟠 Logistics & Supply Chain Commons</h5>
+              <p>Provenance, traceability of goods, incentivized regenerative sourcing, and decentralized logistics coordination. Liechtenstein's position as a cross-border hub within EU/EFTA creates potential for trusted logistics corridors.</p>
+            </div>
+
+            <p><em>[To be expanded: cross-domain synergies, the integrated bioregional economy vision, specific use cases per domain, technology stack details]</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="2.4">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">2.4 Civic Protocol Infrastructure</div>
+            <div class="collapsible-preview">The enabling technical layer — DIDs, oracle services, encrypted collaboration — framed as commons infrastructure.</div>
+          </div>
+          <span class="collapsible-status status-outline">Outline</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>The technical infrastructure of a regenerative digital ecosystem must itself embody commons principles: open protocols, interoperability, resistance to platform capture, and governance by participants.</p>
+            <p>The DigiHub operates on a stack built around several core components: decentralized identifiers (DIDs) providing self-sovereign identity; Matrix-based end-to-end encrypted collaboration spaces; AI "oracle services" that organizations can deploy, own, and monetize; and protocol-driven verification and credentialing systems.</p>
+            <p>Critically, this infrastructure is designed as a <em>civic protocol</em> — not a platform. The distinction matters: platforms extract value by becoming intermediaries; protocols enable value by becoming standards. The oracle marketplace model, where 80% of value flows to the service provider and the platform takes only a coordination fee, embodies this principle.</p>
+
+            <p><em>[To be expanded: detailed architecture, the EXO/IXO ecosystem's role, agent card data model, oracle marketplace economics, LLM.ext approach to AI representation]</em></p>
+
+            <div class="ref-tag">IXO / EXO</div>
+            <div class="ref-tag">Matrix Protocol</div>
+            <div class="ref-tag">W3C DIDs</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="2.5">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">2.5 Economic Coordination Patterns</div>
+            <div class="collapsible-preview">Collaborative Finance, the Commons Dividend, and economic patterns that circulate rather than extract.</div>
+          </div>
+          <span class="collapsible-status status-draft">In progress</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>The economic layer of the regenerative digital ecosystem draws on several convergent traditions that share a common insight: the dominant monetary monoculture is a root cause of both economic fragility and local economy impoverishment.</p>
+
+            <h4>Collaborative Finance &amp; Inside Money</h4>
+            <p>The Collaborative Finance sphere, as articulated by Paolo Dini, builds on endogenous money theory and emphasizes strengthening "inside money" circuits through mutual credit systems, credit obligation schemes, and network clearing algorithms. This is not abstract theory — it is the operational logic of how bioregional economies can achieve monetary self-determination alongside digital self-determination.</p>
+
+            <h4>The Commons Dividend</h4>
+            <p>In the venture capital model, successful exits return capital to investors who deploy it in new startups. Value concentrates in fund managers. In the sovereignty model, successful transformations return <em>capability</em> to the commons, making future transformations easier. The first cohort pays the full cost of developing procurement templates, security frameworks, and migration playbooks. The second pays only adaptation costs. The tenth pays near zero — sovereignty becomes standard practice.</p>
+            <p>This is the Commons Dividend: shared infrastructure experiencing falling per-unit costs as membership grows, creating living knowledge that improves through use, maintained by a community that directly benefits from its quality.</p>
+
+            <h4>Civic Protocol Economies</h4>
+            <p>The Civic Protocol Economy framework explores innovations at the intersection of Civic Economies (relational, wellbeing-oriented) and Protocol Economies (enabled by smart contracts, DIDs, automated governance). A Civic Protocol Economy consists of relational economic systems, governed by their participants, represented through digital identities, that account for externalities, and are partially managed by digital agents.</p>
+
+            <div class="ref-tag">Dini — CoFi</div>
+            <div class="ref-tag">Lens-FitzGerald 2025</div>
+            <div class="ref-tag">ECSA</div>
+            <div class="ref-tag">Ecoloc / SARDEX</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION III: HOW ===== -->
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">Section III</span>
+        <h2 class="section-group-title">How — Liechtenstein as Prototype</h2>
+      </div>
+
+      <div class="collapsible" data-section="3.1">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">3.1 Liechtenstein's Unique Position</div>
+            <div class="collapsible-preview">Why this particular place, at this particular time, with these particular assets.</div>
+          </div>
+          <span class="collapsible-status status-draft">In progress</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>Liechtenstein is not merely a convenient location for this work — it is a structurally privileged laboratory. Several characteristics converge to create a unique conditions for prototyping regenerative digital ecosystems:</p>
+            <ul>
+              <li><strong>Governance agility</strong> — As a micro-state, the distance between policy insight and policy implementation is extraordinarily short. The TVTG (Token and VT Service Provider Act), commonly known as the Blockchain Act, demonstrates this agility.</li>
+              <li><strong>Legal innovation</strong> — The Liechtenstein Venture Cooperative (LVC) legal form, under which DigiHub itself operates, provides a native vehicle for commons-based economic coordination.</li>
+              <li><strong>Digital identity readiness</strong> — E-ID infrastructure and progressive data protection laws align with the DID-based architecture of the ecosystem.</li>
+              <li><strong>Bioregional embeddedness</strong> — Situated in the Alpine region with deep connections to the DACH economies and EU/EFTA frameworks, Liechtenstein operates at the intersection of bioregional rootedness and international connectivity.</li>
+              <li><strong>EDIH mandate</strong> — As part of the European Digital Innovation Hub network, DigiHub Liechtenstein has an institutional mandate and network to translate local prototypes into European patterns.</li>
+            </ul>
+            <p>The DigiHub's stated mission captures the ambition: <em>"We make Liechtenstein a lighthouse for positive digital transformation that connects humans through trust, transparency, and purpose-driven action."</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="3.2">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">3.2 The Sovereignty Flywheel</div>
+            <div class="collapsible-preview">A phased approach to building collective capability — from awareness to normalization.</div>
+          </div>
+          <span class="collapsible-status status-ready">Draft</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <div class="flywheel-stage">
+              <div class="flywheel-number">1</div>
+              <div class="flywheel-content">
+                <span class="flywheel-timeframe">Year −1 to 0</span>
+                <h5>Awareness &amp; Credibility</h5>
+                <p>Organizations confront dependency vulnerability. Early movement members provide peer validation: "We faced the same crisis. Here's our journey." The sovereignty movement lends operational credibility — not financial, but experiential.</p>
+              </div>
+            </div>
+            <div class="flywheel-stage">
+              <div class="flywheel-number">2</div>
+              <div class="flywheel-content">
+                <span class="flywheel-timeframe">Year 0–3</span>
+                <h5>Coalition Formation</h5>
+                <p>Organizations join communities of practice using common assessment frameworks. In isolation, each procurement budget is too small to influence vendors. Together, they represent a market that cannot be ignored. Procurement frameworks become shared standards.</p>
+              </div>
+            </div>
+            <div class="flywheel-stage">
+              <div class="flywheel-number">3</div>
+              <div class="flywheel-content">
+                <span class="flywheel-timeframe">Year 3–5</span>
+                <h5>Capability Building</h5>
+                <p>Organizations develop expertise in different domains. Each contributes mastery to the commons while drawing on others' expertise. The cost of sovereignty drops dramatically when infrastructure is shared. This stage requires deep investment in organizational change — building sovereignty is cultural, not just technical.</p>
+              </div>
+            </div>
+            <div class="flywheel-stage">
+              <div class="flywheel-number">4</div>
+              <div class="flywheel-content">
+                <span class="flywheel-timeframe">Year 5–8</span>
+                <h5>Strategic Autonomy</h5>
+                <p>Organizations achieve meaningful independence. They can credibly negotiate. Legacy vendors must adapt or lose market share. The power dynamic inverts from supplication to negotiation among peers.</p>
+              </div>
+            </div>
+            <div class="flywheel-stage">
+              <div class="flywheel-number">5</div>
+              <div class="flywheel-content">
+                <span class="flywheel-timeframe">Year 8+</span>
+                <h5>Normalization</h5>
+                <p>Sovereignty disappears into normalcy. It is no longer a "project" — it is simply how things are done. Embedded in procurement policy, hiring practices, organizational culture. The ultimate success: when strategic autonomy becomes unremarkable.</p>
+              </div>
+            </div>
+
+            <p>DigiHub Liechtenstein currently operates at the boundary of Stages 1 and 2 — building awareness while simultaneously forming the coalitions and infrastructure needed for Stage 3.</p>
+
+            <div class="ref-tag">Lens-FitzGerald 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="3.3">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">3.3 Current Initiatives &amp; Entry Points</div>
+            <div class="collapsible-preview">Energy sector focus, Digital Innovation Day, design partnerships, youth engagement, cross-border collaborations.</div>
+          </div>
+          <span class="collapsible-status status-outline">Outline</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p><em>[To be expanded from meeting notes and initiative list. Key elements to cover:]</em></p>
+            <ul>
+              <li>Energy sector as initial onboarding focus — existing relationships, tangible infrastructure</li>
+              <li>Digital Innovation Day (September 2025) as stakeholder engagement milestone</li>
+              <li>LLM.ext organizational profiles as immediate value demonstration</li>
+              <li>Design partner programs for sectoral templates (municipalities, cooperatives)</li>
+              <li>Youth engagement through YOMA and Token for Change</li>
+              <li>Cross-border collaborations: Interreg digital self-determination grant, Alpine region partnerships</li>
+              <li>AI campus integration for skills and micro-certification</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="3.4">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">3.4 Replicability &amp; The Bioregional Template</div>
+            <div class="collapsible-preview">What is replicable is not the platform, but the institutional pattern — and every EDIH could be a node.</div>
+          </div>
+          <span class="collapsible-status status-outline">Outline</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>The critical question for the EDIH network is not "can we copy this platform?" but "can we replicate this institutional pattern?" What DigiHub Liechtenstein is prototyping is not proprietary technology but a <em>way of organizing</em> — a set of principles, governance models, economic coordination patterns, and infrastructure choices that can be adapted to any bioregion.</p>
+            <p><em>[To be expanded: the "Bioregional Tech Stack" concept — modular, adaptable, commons-based; criteria for adaptation across geographies; how the EDIH network could function as a distributed sovereignty network; connection to the Commons Dividend — each hub that succeeds makes the next hub's journey easier]</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div><!-- /view-paper -->
+
+
+<!-- =================== METHODOLOGY VIEW =================== -->
+<div class="view-container hidden" id="view-methodology">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-kicker">Methodology · Analytical Approach</div>
+      <h1 class="hero-title">How We <em>Think</em></h1>
+      <p class="hero-subtitle">The analytical frameworks, epistemological commitments, and intellectual lineage behind this position paper.</p>
+      <div class="hero-meta">
+        <span>Transparency in method</span>
+        <span>·</span>
+        <span>Living analysis, not final report</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="hero-divider"></div>
+
+  <section class="summary-section reveal">
+    <div class="summary-box">
+      <div class="summary-label">Approach</div>
+      <p class="summary-text">
+        This position paper draws on multiple analytical frameworks, each illuminating different aspects of the regenerative digital ecosystem. We make our methods explicit because transparency in reasoning is itself a commons value. The sensemaking process — design sprints, Wardley mapping workshops, stakeholder co-creation — is not merely how the document was produced; it is part of what the document advocates.
+      </p>
+    </div>
+  </section>
+
+  <main class="content-area">
+
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">Frameworks</span>
+        <h2 class="section-group-title">Analytical Frameworks Used</h2>
+      </div>
+
+      <div class="collapsible" data-section="m1">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">Wardley Mapping</div>
+            <div class="collapsible-preview">Situational awareness and dependency analysis — seeing the landscape before making strategic choices.</div>
+          </div>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>Wardley Mapping, developed by Simon Wardley, plots value chains across an axis of evolution — from genesis through custom-built and product to commodity/utility. It reveals how components naturally evolve through supply and demand competition, making dependencies, leverage points, and strategic options visible.</p>
+            <p>Wardley's core argument about digital sovereignty is that most sovereignty conversations happen without maps — they are storytelling exercises disconnected from the actual landscape. His "Sovereignty and Landscape" analysis argues that sovereignty, like physical territory, requires cartographic understanding before strategic decisions can be made.</p>
+            <p>In this paper, Wardley Mapping is applied to: map the digital dependency landscape of a bioregional entity; identify which components belong in Self, Together, or Others categories; and anticipate how the landscape is evolving, where new leverage points are emerging.</p>
+            <div class="ref-tag">Wardley 2005–2025</div>
+            <div class="ref-tag">CC-BY-SA Licensed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="m2">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">Multi-Layered Sovereignty (Calzada)</div>
+            <div class="collapsible-preview">Institutional, cooperative, and geopolitical sovereignty as overlapping analytical layers.</div>
+          </div>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>Igor Calzada's research, spanning from "Smart City Citizenship" (2021) through his recent work on data cooperatives and algorithmic nations, provides a multi-layered analytical framework for understanding digital sovereignty:</p>
+            <ul>
+              <li><strong>Institutional sovereignty</strong> — embedded in public agencies, hospitals, municipalities. The capacity of existing institutions to govern their own digital infrastructure.</li>
+              <li><strong>Cooperative sovereignty</strong> — realized through federated data cooperatives and trusts. New institutional forms enabling collective data governance.</li>
+              <li><strong>Geopolitical sovereignty</strong> — enacted through interregional alliances and AI standards. The macro-level context shaping what local sovereignty is possible.</li>
+            </ul>
+            <p>Calzada's concept of "Algorithmic Nations" — drawing on Arendtian political theory — demonstrates how communities can attain self-determination through data sovereignty, offering a post-Westphalian frame particularly relevant for bioregional governance.</p>
+            <div class="ref-tag">Calzada 2021–2025</div>
+            <div class="ref-tag">ICDS Oslo 2025</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="m3">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">Commons Governance (Ostrom)</div>
+            <div class="collapsible-preview">Design principles for managing shared resources — applied to digital infrastructure.</div>
+          </div>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>Elinor Ostrom's Nobel Prize-winning research demonstrated that communities can sustainably govern shared resources when institutional arrangements match the resource's characteristics. Her eight design principles — from clearly defined boundaries to nested enterprises — provide the institutional blueprint for digital commons governance.</p>
+            <p>Applied to the regenerative digital ecosystem: POD boundaries define who governs what; collective-choice arrangements are encoded in protocols; monitoring happens through verifiable credentials; graduated sanctions and conflict resolution are built into smart contract logic; and nested governance mirrors the POD typology from citizen to bioregion.</p>
+            <div class="ref-tag">Ostrom 1990</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="collapsible" data-section="m4">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">Additional Frameworks</div>
+            <div class="collapsible-preview">Doughnut Economics, Transition Design, Viable Systems Model, and other complementary lenses.</div>
+          </div>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <div class="framework-grid">
+              <div class="framework-card">
+                <div class="framework-card-name">Doughnut Economics</div>
+                <div class="framework-card-desc">Kate Raworth's normative compass — the social foundation and ecological ceiling defining the design space for regenerative systems.</div>
+              </div>
+              <div class="framework-card">
+                <div class="framework-card-name">Transition Design</div>
+                <div class="framework-card-desc">Systemic, value-grounded, transition-oriented design methodology for long-horizon institutional change.</div>
+              </div>
+              <div class="framework-card">
+                <div class="framework-card-name">Viable Systems Model</div>
+                <div class="framework-card-desc">Stafford Beer's cybernetic model for organizational viability, particularly Angela Espinoza's approach to recursive governance.</div>
+              </div>
+              <div class="framework-card">
+                <div class="framework-card-name">Collaborative Sovereignty</div>
+                <div class="framework-card-desc">Lens-FitzGerald's thesis: preferential attachment applied to commons rather than capital, producing resilience rather than extraction.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">Stance</span>
+        <h2 class="section-group-title">Epistemological Commitments</h2>
+      </div>
+
+      <div class="collapsible" data-section="m5">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">How We Know What We Know</div>
+            <div class="collapsible-preview">Systems thinking, action research, and the sensemaking process as methodology.</div>
+          </div>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <p>This is a living analysis, not a final report. It is produced through an action research methodology — learning by doing, reflecting, and iterating. The sensemaking process itself (design sprints, Wardley mapping workshops, stakeholder co-creation sessions, meeting dialogues) is not merely how this document was produced; it is an integral part of what the document advocates.</p>
+            <p>We acknowledge the boundaries between solid knowledge, reasoned speculation, and open questions. The content status indicators (Draft, In Progress, Outline) are not bugs — they are features of a document that takes its own living nature seriously.</p>
+            <p>We are oriented by systems thinking — attending to feedback loops, emergence, unintended consequences, and the irreducibility of complex adaptive systems to simple causal models. The regenerative digital ecosystem is not a machine to be engineered but an ecology to be cultivated.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key References -->
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">References</span>
+        <h2 class="section-group-title">Key References &amp; Intellectual Lineage</h2>
+      </div>
+
+      <div class="collapsible" data-section="m6">
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">Selected Bibliography</div>
+            <div class="collapsible-preview">Organized by theme — sovereignty, commons, regenerative economics, digital rights.</div>
+          </div>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content">
+            <h4>Digital Sovereignty &amp; Self-Determination</h4>
+            <ul>
+              <li>Wardley, S. (2020). "Digital Sovereignty." <em>Bits or Pieces</em> blog.</li>
+              <li>Wardley, S. (2025). "Sovereignty and Landscape." <em>Medium / MapCulture</em>.</li>
+              <li>Calzada, I. (2025). "Digital Inclusion & Urban AI." <em>Discover Cities</em>.</li>
+              <li>Calzada, I. (2025). "From Data-opolies to Decentralization?" <em>Springer, RIIFORUM 2024</em>.</li>
+              <li>Calzada, I. (2024). "Decentralized Web3 Reshaping Internet Governance." <em>Future Internet</em>.</li>
+              <li>Lens-FitzGerald, M. (2025). "The Guild of Digital Sovereignty."</li>
+              <li>Public Digital (2025). "The Digital Sovereignty Dialogue."</li>
+            </ul>
+            <h4>Commons &amp; Institutional Design</h4>
+            <ul>
+              <li>Ostrom, E. (1990). <em>Governing the Commons</em>. Cambridge University Press.</li>
+              <li>Bollier, D. & Helfrich, S. (2019). <em>Free, Fair, and Alive</em>. New Society.</li>
+            </ul>
+            <h4>Regenerative &amp; Bioregional Economics</h4>
+            <ul>
+              <li>Raworth, K. (2017). <em>Doughnut Economics</em>. Random House.</li>
+              <li>Dini, P. (2020). Collaborative Finance framework.</li>
+            </ul>
+            <p><em>[Living bibliography — to be expanded]</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vocabulary -->
+    <div class="section-group reveal">
+      <div class="section-group-header">
+        <span class="section-number">Glossary</span>
+        <h2 class="section-group-title">Shared Vocabulary</h2>
+      </div>
+
+      <table class="vocab-table">
+        <tr>
+          <td>Regenerative Digital Ecosystem</td>
+          <td>A bioregional digital infrastructure and institutional arrangement designed to build collective capability, governed as commons, operating within ecological and social boundaries.</td>
+        </tr>
+        <tr>
+          <td>Digital Self-Determination</td>
+          <td>The capacity of individuals, organizations, and communities to make meaningful choices about their digital infrastructure, data, and economic participation — increasing autonomy rather than absolute independence.</td>
+        </tr>
+        <tr>
+          <td>POD</td>
+          <td>Programmable Organizational Domain — a modular, sovereign digital-institutional unit enabling entities to manage their digital presence, data, and economic participation within a commons-based ecosystem.</td>
+        </tr>
+        <tr>
+          <td>Commons Domain</td>
+          <td>A shared resource area (energy, data, logistics) requiring collective governance, where individual action is insufficient but collective action creates surplus value.</td>
+        </tr>
+        <tr>
+          <td>Sovereignty Flywheel</td>
+          <td>The self-reinforcing cycle where achieving digital self-determination generates knowledge and infrastructure that makes subsequent transformations easier and cheaper.</td>
+        </tr>
+        <tr>
+          <td>Commons Dividend</td>
+          <td>The accumulated shared capability from each participant's sovereignty journey — templates, expertise, infrastructure — that reduce costs for subsequent participants.</td>
+        </tr>
+        <tr>
+          <td>Self / Together / Others</td>
+          <td>Framework for categorizing digital capabilities: what must be controlled directly, what should be built collectively, and what can be safely sourced externally.</td>
+        </tr>
+        <tr>
+          <td>Civic Protocol Economy</td>
+          <td>Economic coordination combining civic economy principles (relational, wellbeing-oriented) with protocol-based infrastructure (smart contracts, DIDs, automated governance).</td>
+        </tr>
+      </table>
+    </div>
+
+  </main>
+
+</div><!-- /view-methodology -->
+
+
+<footer class="site-footer">
+  <span class="footer-text">© 2026 <a href="https://digihub.li" target="_blank">DigiHub Liechtenstein</a> · European Digital Innovation Hub</span>
+  <span class="footer-text">Living Document · <a href="#">Contribute</a> · <a href="#">Changelog</a></span>
+</footer>
+
+
+<script>
+// =========== WEBGL SHADER ===========
+(function() {
+  const canvas = document.getElementById('shader-canvas');
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: true });
+  if (!gl) return;
+
+  function resize() {
+    canvas.width = window.innerWidth * 0.5;
+    canvas.height = window.innerHeight * 0.5;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}`;
+  const fs = `
+    precision mediump float;
+    uniform float t;
+    uniform vec2 r;
+
+    // Simplex-ish noise
+    vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+    vec2 mod289(vec2 x){return x-floor(x*(1./289.))*289.;}
+    vec3 permute(vec3 x){return mod289(((x*34.)+1.)*x);}
+
+    float snoise(vec2 v){
+      const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);
+      vec2 i=floor(v+dot(v,C.yy));
+      vec2 x0=v-i+dot(i,C.xx);
+      vec2 i1;i1=(x0.x>x0.y)?vec2(1,0):vec2(0,1);
+      vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;
+      i=mod289(i);
+      vec3 p2=permute(permute(i.y+vec3(0,i1.y,1.))+i.x+vec3(0,i1.x,1.));
+      vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);
+      m=m*m;m=m*m;
+      vec3 x=2.*fract(p2*C.www)-1.;
+      vec3 h=abs(x)-.5;
+      vec3 ox=floor(x+.5);
+      vec3 a0=x-ox;
+      m*=1.79284291400159-.85373472095314*(a0*a0+h*h);
+      vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+      return 130.*dot(m,g);
+    }
+
+    void main(){
+      vec2 uv=gl_FragCoord.xy/r;
+      float n=0.;
+      n+=snoise(uv*2.2+t*0.04)*0.5;
+      n+=snoise(uv*4.5-t*0.06)*0.25;
+      n+=snoise(uv*8.0+t*0.03)*0.125;
+      n=n*0.5+0.5;
+
+      // Teal-to-dark gradient
+      vec3 c1=vec3(0.04,0.06,0.1);
+      vec3 c2=vec3(0.05,0.45,0.42);
+      vec3 c3=vec3(0.02,0.03,0.06);
+
+      vec3 col=mix(c1,c2,smoothstep(0.35,0.65,n));
+      col=mix(col,c3,smoothstep(0.6,0.9,1.-uv.y));
+
+      // Subtle topology lines
+      float line=abs(fract(n*8.)-0.5)*2.;
+      line=smoothstep(0.92,0.98,line);
+      col+=vec3(0.08,0.72,0.66)*line*0.06;
+
+      gl_FragColor=vec4(col,1);
+    }
+  `;
+
+  function makeShader(src, type) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, makeShader(vs, gl.VERTEX_SHADER));
+  gl.attachShader(prog, makeShader(fs, gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+  const pLoc = gl.getAttribLocation(prog, 'p');
+  gl.enableVertexAttribArray(pLoc);
+  gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const tLoc = gl.getUniformLocation(prog, 't');
+  const rLoc = gl.getUniformLocation(prog, 'r');
+
+  let startTime = Date.now();
+  function draw() {
+    gl.uniform1f(tLoc, (Date.now() - startTime) * 0.001);
+    gl.uniform2f(rLoc, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+
+// =========== COLLAPSIBLE SECTIONS ===========
+document.querySelectorAll('.collapsible-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const section = trigger.closest('.collapsible');
+    section.classList.toggle('open');
+  });
+});
+
+
+// =========== VIEW SWITCHING ===========
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const view = tab.dataset.view;
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    document.querySelectorAll('.view-container').forEach(v => v.classList.add('hidden'));
+    document.getElementById('view-' + view).classList.remove('hidden');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+
+// =========== SCROLL PROGRESS ===========
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = (scrollTop / docHeight) * 100;
+  document.getElementById('scrollProgress').style.width = progress + '%';
+
+  // Header shrink
+  document.getElementById('siteHeader').classList.toggle('scrolled', scrollTop > 60);
+});
+
+
+// =========== REVEAL ON SCROLL ===========
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
