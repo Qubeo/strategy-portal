@@ -6,4 +6,4 @@ Critically, this infrastructure is designed as a *civic protocol* — not a plat
 
 *[To be expanded: detailed architecture, the IXO ecosystem's role, agent card data model, oracle marketplace economics, LLM.ext approach to AI representation]*
 
-<span class="ref-tag">IXO / EXO</span> <span class="ref-tag">Matrix Protocol</span> <span class="ref-tag">W3C DIDs</span>
+<span class="ref-tag">IXO</span> <span class="ref-tag">Matrix Protocol</span> <span class="ref-tag">W3C DIDs</span>
