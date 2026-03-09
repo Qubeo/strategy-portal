@@ -1,0 +1,3 @@
+The critical question for the EDIH network is not "can we copy this platform?" but "can we replicate this institutional pattern?" What DigiHub Liechtenstein is prototyping is not proprietary technology but a *way of organizing* — a set of principles, governance models, economic coordination patterns, and infrastructure choices that can be adapted to any bioregion.
+
+*[To be expanded: the "Bioregional Tech Stack" concept — modular, adaptable, commons-based; criteria for adaptation across geographies; how the EDIH network could function as a distributed sovereignty network; connection to the Commons Dividend — each hub that succeeds makes the next hub's journey easier]*
