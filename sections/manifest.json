@@ -1,0 +1,179 @@
+{
+  "paper": {
+    "groups": [
+      {
+        "label": "Section I",
+        "title": "Why — The Sovereignty-Regeneration Nexus",
+        "sections": [
+          {
+            "id": "1.1",
+            "file": "paper-1-1.md",
+            "title": "1.1 The Dependency Crisis",
+            "preview": "Why digital infrastructure as extractive monoculture creates existential risk — and why \"sovereignty\" alone is insufficient.",
+            "status": "draft"
+          },
+          {
+            "id": "1.2",
+            "file": "paper-1-2.md",
+            "title": "1.2 From Sovereignty to Self-Determination",
+            "preview": "Sovereignty as relational, not isolationist. The Self / Together / Others framework. Digital self-determination as increasing autonomy.",
+            "status": "draft"
+          },
+          {
+            "id": "1.3",
+            "file": "paper-1-3.md",
+            "title": "1.3 The Regenerative Paradigm",
+            "preview": "Why regenerative economics — not just \"sustainable\" — provides the economic paradigm that sovereignty needs.",
+            "status": "in-progress"
+          },
+          {
+            "id": "1.4",
+            "file": "paper-1-4.md",
+            "title": "1.4 The Zeitgeist Moment",
+            "preview": "Geopolitical context, the EU Digital Decade, and why small states and bioregions are uniquely positioned as laboratories.",
+            "status": "outline"
+          }
+        ]
+      },
+      {
+        "label": "Section II",
+        "title": "What — The Regenerative Digital Ecosystem Model",
+        "sections": [
+          {
+            "id": "2.1",
+            "file": "paper-2-1.md",
+            "title": "2.1 Model Overview",
+            "preview": "The architecture of a regenerative digital ecosystem: institutional layer, infrastructure layer, economic layer.",
+            "status": "outline"
+          },
+          {
+            "id": "2.2",
+            "file": "paper-2-2.md",
+            "title": "2.2 Programmable Organizational Domains",
+            "preview": "PODs as institutional primitives — new organizational forms that embody the paradigm at every scale.",
+            "status": "in-progress"
+          },
+          {
+            "id": "2.3",
+            "file": "paper-2-3.md",
+            "title": "2.3 Commons Domains: Energy, Data, Logistics",
+            "preview": "Sectoral verticals reframed as shared resources requiring collective governance.",
+            "status": "outline"
+          },
+          {
+            "id": "2.4",
+            "file": "paper-2-4.md",
+            "title": "2.4 Civic Protocol Infrastructure",
+            "preview": "The enabling technical layer — DIDs, oracle services, encrypted collaboration — framed as commons infrastructure.",
+            "status": "outline"
+          },
+          {
+            "id": "2.5",
+            "file": "paper-2-5.md",
+            "title": "2.5 Economic Coordination Patterns",
+            "preview": "Collaborative Finance, the Commons Dividend, and economic patterns that circulate rather than extract.",
+            "status": "in-progress"
+          }
+        ]
+      },
+      {
+        "label": "Section III",
+        "title": "How — Liechtenstein as Prototype",
+        "sections": [
+          {
+            "id": "3.1",
+            "file": "paper-3-1.md",
+            "title": "3.1 Liechtenstein's Unique Position",
+            "preview": "Why this particular place, at this particular time, with these particular assets.",
+            "status": "in-progress"
+          },
+          {
+            "id": "3.2",
+            "file": "paper-3-2.md",
+            "title": "3.2 The Sovereignty Flywheel",
+            "preview": "A phased approach to building collective capability — from awareness to normalization.",
+            "status": "draft"
+          },
+          {
+            "id": "3.3",
+            "file": "paper-3-3.md",
+            "title": "3.3 Current Initiatives & Entry Points",
+            "preview": "Energy sector focus, Digital Innovation Day, design partnerships, youth engagement, cross-border collaborations.",
+            "status": "outline"
+          },
+          {
+            "id": "3.4",
+            "file": "paper-3-4.md",
+            "title": "3.4 Replicability & The Bioregional Template",
+            "preview": "What is replicable is not the platform, but the institutional pattern — and every EDIH could be a node.",
+            "status": "outline"
+          }
+        ]
+      }
+    ]
+  },
+  "methodology": {
+    "groups": [
+      {
+        "label": "Frameworks",
+        "title": "Analytical Frameworks Used",
+        "sections": [
+          {
+            "id": "m1",
+            "file": "method-m1.md",
+            "title": "Wardley Mapping",
+            "preview": "Situational awareness and dependency analysis — seeing the landscape before making strategic choices.",
+            "status": "draft"
+          },
+          {
+            "id": "m2",
+            "file": "method-m2.md",
+            "title": "Multi-Layered Sovereignty (Calzada)",
+            "preview": "Institutional, cooperative, and geopolitical sovereignty as overlapping analytical layers.",
+            "status": "draft"
+          },
+          {
+            "id": "m3",
+            "file": "method-m3.md",
+            "title": "Commons Governance (Ostrom)",
+            "preview": "Design principles for managing shared resources — applied to digital infrastructure.",
+            "status": "draft"
+          },
+          {
+            "id": "m4",
+            "file": "method-m4.md",
+            "title": "Additional Frameworks",
+            "preview": "Doughnut Economics, Transition Design, Viable Systems Model, and other complementary lenses.",
+            "status": "draft"
+          }
+        ]
+      },
+      {
+        "label": "Stance",
+        "title": "Epistemological Commitments",
+        "sections": [
+          {
+            "id": "m5",
+            "file": "method-m5.md",
+            "title": "How We Know What We Know",
+            "preview": "Systems thinking, action research, and the sensemaking process as methodology.",
+            "status": "draft"
+          }
+        ]
+      },
+      {
+        "label": "References",
+        "title": "Key References & Intellectual Lineage",
+        "sections": [
+          {
+            "id": "m6",
+            "file": "method-m6.md",
+            "title": "Selected Bibliography",
+            "preview": "Organized by theme — sovereignty, commons, regenerative economics, digital rights.",
+            "status": "draft"
+          }
+        ]
+      }
+    ]
+  }
+}

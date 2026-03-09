@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regenerative Digital Ecosystems — DigiHub Liechtenstein</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --slate-950: #0a0f1a;
+    --slate-900: #0f172a;
+    --slate-800: #1a2332;
+    --slate-700: #2a3548;
+    --slate-600: #3d4f65;
+    --slate-400: #8899ad;
+    --slate-300: #a8b8c8;
+    --slate-200: #c8d4df;
+    --slate-100: #e8edf2;
+    --slate-50: #f4f6f8;
+    --teal-600: #0d9488;
+    --teal-500: #14b8a6;
+    --teal-400: #2dd4bf;
+    --teal-300: #5eead4;
+    --teal-200: #99f6e4;
+    --warm-100: #faf5f0;
+    --warm-200: #f0e6d8;
+    --amber-400: #fbbf24;
+
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --max-w: 860px;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    font-size: 17px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--slate-950);
+    color: var(--slate-200);
+    line-height: 1.72;
+    overflow-x: hidden;
+  }
+
+  /* =========== SHADER CANVAS =========== */
+  #shader-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* =========== HEADER / NAV =========== */
+  .site-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    background: rgba(10, 15, 26, 0.7);
+    border-bottom: 1px solid rgba(20, 184, 166, 0.08);
+    transition: all 0.4s var(--ease-out-expo);
+  }
+
+  .site-header.scrolled {
+    padding: 0.8rem 2rem;
+    background: rgba(10, 15, 26, 0.92);
+  }
+
+  .logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .logo-mark {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--teal-500), var(--teal-300));
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--slate-950);
+    font-weight: 700;
+  }
+
+  .logo-text {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--slate-400);
+    font-weight: 300;
+  }
+
+  .nav-tabs {
+    display: flex;
+    gap: 0.25rem;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 4px;
+  }
+
+  .nav-tab {
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--slate-400);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out-expo);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-tab:hover { color: var(--slate-200); }
+
+  .nav-tab.active {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--teal-400);
+  }
+
+  .version-badge {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--slate-600);
+    letter-spacing: 0.05em;
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--slate-700);
+    border-radius: 6px;
+  }
+
+  /* =========== HERO =========== */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 2rem 4rem;
+  }
+
+  .hero-inner {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .hero-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: 1.8rem;
+    opacity: 0;
+    animation: fadeSlideUp 0.8s var(--ease-out-expo) 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    line-height: 1.12;
+    color: var(--slate-50);
+    font-weight: 400;
+    margin-bottom: 0.6rem;
+    opacity: 0;
+    animation: fadeSlideUp 1s var(--ease-out-expo) 0.5s forwards;
+  }
+
+  .hero-title em { color: var(--teal-400); font-style: italic; }
+
+  .hero-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--slate-400);
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeSlideUp 1s var(--ease-out-expo) 0.7s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    color: var(--slate-600);
+    opacity: 0;
+    animation: fadeSlideUp 0.8s var(--ease-out-expo) 1s forwards;
+  }
+
+  .hero-meta a {
+    color: var(--teal-500);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(20,184,166,0.3);
+    transition: border-color 0.2s;
+  }
+
+  .hero-meta a:hover { border-color: var(--teal-400); }
+
+  .hero-divider {
+    width: 100%;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--teal-500), transparent);
+    opacity: 0;
+    animation: fadeIn 1.2s var(--ease-out-expo) 1.2s forwards;
+  }
+
+  /* =========== ONE MINUTE SUMMARY =========== */
+  .summary-section {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 4rem 2rem;
+  }
+
+  .summary-box {
+    background: linear-gradient(135deg, rgba(20,184,166,0.06), rgba(20,184,166,0.02));
+    border: 1px solid rgba(20,184,166,0.12);
+    border-radius: 16px;
+    padding: 2.5rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .summary-box::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--teal-400), var(--teal-600));
+    border-radius: 4px 0 0 4px;
+  }
+
+  .summary-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    margin-bottom: 1rem;
+  }
+
+  .summary-text {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--slate-100);
+  }
+
+  /* =========== CONTENT SECTIONS =========== */
+  .content-area {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 2rem 2rem 8rem;
+  }
+
+  .section-group { margin-bottom: 4rem; }
+
+  .section-group-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--slate-800);
+  }
+
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--teal-500);
+    background: rgba(20,184,166,0.08);
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+
+  .section-group-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--slate-50);
+    font-weight: 400;
+  }
+
+  /* Collapsible sections */
+  .collapsible {
+    margin-bottom: 1px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s var(--ease-out-expo);
+  }
+
+  .collapsible + .collapsible { margin-top: 2px; }
+
+  .collapsible-trigger {
+    width: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.3rem 1.5rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: left;
+    color: var(--slate-200);
+    font-family: var(--font-body);
+    transition: all 0.3s var(--ease-out-expo);
+  }
+
+  .collapsible.open .collapsible-trigger {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(20,184,166,0.12);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .collapsible-trigger:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.08);
+  }
+
+  .collapsible-icon {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+
+  .collapsible.open .collapsible-icon { transform: rotate(90deg); }
+
+  .collapsible-icon svg {
+    width: 14px; height: 14px;
+    stroke: var(--teal-500);
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .collapsible-header { flex: 1; }
+
+  .collapsible-title {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--slate-100);
+    margin-bottom: 0.3rem;
+  }
+
+  .collapsible-preview {
+    font-size: 0.85rem;
+    color: var(--slate-400);
+    line-height: 1.5;
+  }
+
+  .collapsible-status {
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  .status-draft  { color: var(--teal-400);  background: rgba(20,184,166,0.1); }
+  .status-draft-label::after { content: 'Draft'; }
+
+  .status-in-progress { color: var(--amber-400); background: rgba(251,191,36,0.1); }
+  .status-outline     { color: var(--slate-400); background: rgba(255,255,255,0.05); }
+
+  .edit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--slate-600);
+    text-decoration: none;
+    border: 1px solid var(--slate-700);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    transition: all 0.2s;
+  }
+
+  .edit-link:hover {
+    color: var(--teal-400);
+    border-color: rgba(20,184,166,0.3);
+    background: rgba(20,184,166,0.04);
+  }
+
+  .collapsible-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s var(--ease-out-expo);
+    background: rgba(255,255,255,0.015);
+    border-left: 1px solid rgba(20,184,166,0.12);
+    border-right: 1px solid rgba(20,184,166,0.06);
+    border-bottom: 1px solid rgba(20,184,166,0.06);
+    border-radius: 0 0 12px 12px;
+  }
+
+  .collapsible.open .collapsible-body { max-height: 8000px; }
+
+  .collapsible-content {
+    padding: 1.5rem 1.5rem 2rem 3.5rem;
+  }
+
+  .collapsible-content p {
+    margin-bottom: 1rem;
+    color: var(--slate-300);
+    font-size: 0.95rem;
+  }
+
+  .collapsible-content p:last-child { margin-bottom: 0; }
+
+  .collapsible-content h4, .collapsible-content h5 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    color: var(--slate-100);
+    margin: 1.8rem 0 0.8rem;
+    font-weight: 400;
+  }
+
+  .collapsible-content h4:first-child,
+  .collapsible-content h5:first-child { margin-top: 0; }
+
+  .collapsible-content ul {
+    padding-left: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .collapsible-content li {
+    color: var(--slate-300);
+    font-size: 0.92rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.6;
+  }
+
+  .collapsible-content li::marker { color: var(--teal-500); }
+
+  .collapsible-content strong { color: var(--slate-100); }
+
+  .collapsible-content em { color: var(--slate-200); }
+
+  .content-quote {
+    border-left: 2px solid var(--teal-500);
+    padding: 0.8rem 1.2rem;
+    margin: 1.2rem 0;
+    background: rgba(20,184,166,0.04);
+    border-radius: 0 8px 8px 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--slate-200);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  blockquote {
+    border-left: 2px solid var(--teal-500);
+    padding: 0.8rem 1.2rem;
+    margin: 1.2rem 0;
+    background: rgba(20,184,166,0.04);
+    border-radius: 0 8px 8px 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--slate-200);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  blockquote p { color: var(--slate-200); margin-bottom: 0; }
+
+  .ref-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+    background: rgba(20,184,166,0.08);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    margin: 0.2rem 0.2rem 0.2rem 0;
+    vertical-align: middle;
+  }
+
+  /* Diagram placeholders */
+  .diagram-placeholder {
+    border: 1px dashed var(--slate-700);
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+    background: rgba(255,255,255,0.01);
+  }
+
+  .diagram-placeholder-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--slate-600);
+    margin-bottom: 0.5rem;
+  }
+
+  .diagram-placeholder-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--slate-400);
+    font-size: 0.95rem;
+  }
+
+  /* POD Grid */
+  .pod-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+    margin: 1.2rem 0;
+  }
+
+  .pod-chip {
+    padding: 0.6rem 0.8rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--slate-300);
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .pod-chip:hover {
+    border-color: rgba(20,184,166,0.2);
+    background: rgba(20,184,166,0.05);
+  }
+
+  .pod-chip .pod-emoji {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+  }
+
+  /* Framework cards */
+  .framework-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 1.2rem 0;
+  }
+
+  .framework-card {
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    transition: all 0.3s;
+  }
+
+  .framework-card:hover {
+    border-color: rgba(20,184,166,0.15);
+    background: rgba(20,184,166,0.03);
+  }
+
+  .framework-card-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--slate-100);
+    margin-bottom: 0.4rem;
+  }
+
+  .framework-card-desc {
+    font-size: 0.8rem;
+    color: var(--slate-400);
+    line-height: 1.5;
+  }
+
+  /* Flywheel stages */
+  .flywheel-stage {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.015);
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.3s;
+  }
+
+  .flywheel-stage:hover {
+    background: rgba(255,255,255,0.03);
+    border-left-color: var(--teal-500);
+  }
+
+  .flywheel-number {
+    flex-shrink: 0;
+    width: 32px; height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20,184,166,0.1);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--teal-400);
+    font-weight: 700;
+  }
+
+  .flywheel-content h5 {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--slate-100);
+    margin-bottom: 0.3rem;
+    font-weight: 400;
+    margin-top: 0.2rem;
+  }
+
+  .flywheel-content p {
+    font-size: 0.82rem !important;
+    color: var(--slate-400) !important;
+    margin-bottom: 0 !important;
+    line-height: 1.5 !important;
+  }
+
+  .flywheel-timeframe {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--teal-500);
+    letter-spacing: 0.08em;
+    display: block;
+  }
+
+  /* Vocab table */
+  .vocab-table {
+    width: 100%;
+    margin: 1rem 0;
+    border-collapse: separate;
+    border-spacing: 0 4px;
+  }
+
+  .vocab-table td {
+    padding: 0.8rem 1rem;
+    background: rgba(255,255,255,0.02);
+    font-size: 0.88rem;
+    vertical-align: top;
+  }
+
+  .vocab-table td:first-child {
+    border-radius: 8px 0 0 8px;
+    width: 30%;
+    font-family: var(--font-display);
+    color: var(--teal-300);
+    font-size: 0.92rem;
+  }
+
+  .vocab-table td:last-child {
+    border-radius: 0 8px 8px 0;
+    color: var(--slate-300);
+  }
+
+  /* Commons domain cards */
+  .commons-domain {
+    padding: 1.2rem 1.4rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.3s;
+  }
+
+  .commons-domain:hover { border-color: rgba(20,184,166,0.12); }
+
+  .commons-domain.energy   { background: rgba(34,197,94,0.04);  border-left: 3px solid rgba(34,197,94,0.4); }
+  .commons-domain.data     { background: rgba(59,130,246,0.04); border-left: 3px solid rgba(59,130,246,0.4); }
+  .commons-domain.logistics{ background: rgba(249,115,22,0.04); border-left: 3px solid rgba(249,115,22,0.4); }
+
+  .commons-domain h5 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--slate-100);
+    margin-bottom: 0.5rem;
+    font-weight: 400;
+  }
+
+  .commons-domain p {
+    font-size: 0.85rem !important;
+    line-height: 1.55 !important;
+  }
+
+  /* =========== FOOTER =========== */
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--slate-800);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-text {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--slate-600);
+  }
+
+  .footer-text a { color: var(--teal-500); text-decoration: none; }
+
+  /* =========== ANIMATIONS =========== */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 0.2; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s var(--ease-out-expo), transform 0.7s var(--ease-out-expo);
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* =========== SCROLL INDICATOR =========== */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal-500), var(--teal-300));
+    z-index: 200;
+    transition: width 0.1s linear;
+    width: 0%;
+  }
+
+  .view-container.hidden { display: none; }
+
+  /* =========== RESPONSIVE =========== */
+  @media (max-width: 768px) {
+    html { font-size: 15px; }
+    .hero { padding: 7rem 1.2rem 3rem; }
+    .content-area, .summary-section { padding-left: 1.2rem; padding-right: 1.2rem; }
+    .summary-box { padding: 1.8rem 1.5rem; }
+    .collapsible-content { padding-left: 2.5rem; }
+    .framework-grid { grid-template-columns: 1fr; }
+    .nav-tabs { display: none; }
+    .version-badge { display: none; }
+    .site-footer { flex-direction: column; text-align: center; }
+    .pod-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+<canvas id="shader-canvas"></canvas>
+
+<header class="site-header" id="siteHeader">
+  <div class="logo-area">
+    <div class="logo-mark">d</div>
+    <span class="logo-text">digihub.li · Position Paper</span>
+  </div>
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-view="paper">Position Paper</button>
+    <button class="nav-tab" data-view="methodology">Methodology</button>
+  </div>
+  <span class="version-badge">v0.1 · Living Document</span>
+</header>
+
+
+<!-- =================== PAPER VIEW =================== -->
+<div class="view-container" id="view-paper">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-kicker">Strategic Position Paper · DigiHub Liechtenstein EDIH</div>
+      <h1 class="hero-title">Regenerative<br>Digital <em>Ecosystems</em></h1>
+      <p class="hero-subtitle">A strategic position for bioregional digital sovereignty — from extraction to circulation, from dependency to collective capability.</p>
+      <div class="hero-meta">
+        <span>DigiHub Liechtenstein</span>
+        <span>·</span>
+        <a href="https://digihub.li" target="_blank">digihub.li</a>
+        <span>·</span>
+        <span>EDIH Network</span>
+        <span>·</span>
+        <span>March 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="hero-divider"></div>
+
+  <section class="summary-section reveal">
+    <div class="summary-box">
+      <div class="summary-label">In One Minute</div>
+      <p class="summary-text">
+        Digital sovereignty, when pursued in isolation, produces fragmentation. When embedded within a regenerative economic paradigm and enacted through commons-based institutional innovation, it becomes the foundation for a fundamentally different kind of digital ecosystem — one that builds collective capability rather than extracting individual value. The DigiHub Liechtenstein, operating within the European Digital Innovation Hub network, is prototyping this approach at bioregional scale. Through Programmable Organizational Domains, commons-based infrastructure, and collaborative finance mechanisms, it demonstrates that small, agile jurisdictions can serve as laboratories for institutional patterns that are globally replicable. The question is not whether to pursue digital sovereignty, but <em>what kind of economy</em> sovereignty serves.
+      </p>
+    </div>
+  </section>
+
+  <main class="content-area">
+    <div id="paper-sections"></div>
+  </main>
+
+</div><!-- /view-paper -->
+
+
+<!-- =================== METHODOLOGY VIEW =================== -->
+<div class="view-container hidden" id="view-methodology">
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-kicker">Methodology · Analytical Approach</div>
+      <h1 class="hero-title">How We <em>Think</em></h1>
+      <p class="hero-subtitle">The analytical frameworks, epistemological commitments, and intellectual lineage behind this position paper.</p>
+      <div class="hero-meta">
+        <span>Transparency in method</span>
+        <span>·</span>
+        <span>Living analysis, not final report</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="hero-divider"></div>
+
+  <section class="summary-section reveal">
+    <div class="summary-box">
+      <div class="summary-label">Approach</div>
+      <p class="summary-text">
+        This position paper draws on multiple analytical frameworks, each illuminating different aspects of the regenerative digital ecosystem. We make our methods explicit because transparency in reasoning is itself a commons value. The sensemaking process — design sprints, Wardley mapping workshops, stakeholder co-creation — is not merely how the document was produced; it is part of what the document advocates.
+      </p>
+    </div>
+  </section>
+
+  <main class="content-area">
+    <div id="methodology-sections"></div>
+
+    <!-- Static glossary -->
+    <div class="section-group reveal" id="glossary">
+      <div class="section-group-header">
+        <span class="section-number">Glossary</span>
+        <h2 class="section-group-title">Shared Vocabulary</h2>
+      </div>
+      <table class="vocab-table">
+        <tr>
+          <td>Regenerative Digital Ecosystem</td>
+          <td>A bioregional digital infrastructure and institutional arrangement designed to build collective capability, governed as commons, operating within ecological and social boundaries.</td>
+        </tr>
+        <tr>
+          <td>Digital Self-Determination</td>
+          <td>The capacity of individuals, organizations, and communities to make meaningful choices about their digital infrastructure, data, and economic participation — increasing autonomy rather than absolute independence.</td>
+        </tr>
+        <tr>
+          <td>POD</td>
+          <td>Programmable Organizational Domain — a modular, sovereign digital-institutional unit enabling entities to manage their digital presence, data, and economic participation within a commons-based ecosystem.</td>
+        </tr>
+        <tr>
+          <td>Commons Domain</td>
+          <td>A shared resource area (energy, data, logistics) requiring collective governance, where individual action is insufficient but collective action creates surplus value.</td>
+        </tr>
+        <tr>
+          <td>Sovereignty Flywheel</td>
+          <td>The self-reinforcing cycle where achieving digital self-determination generates knowledge and infrastructure that makes subsequent transformations easier and cheaper.</td>
+        </tr>
+        <tr>
+          <td>Commons Dividend</td>
+          <td>The accumulated shared capability from each participant's sovereignty journey — templates, expertise, infrastructure — that reduce costs for subsequent participants.</td>
+        </tr>
+        <tr>
+          <td>Self / Together / Others</td>
+          <td>Framework for categorizing digital capabilities: what must be controlled directly, what should be built collectively, and what can be safely sourced externally.</td>
+        </tr>
+        <tr>
+          <td>Civic Protocol Economy</td>
+          <td>Economic coordination combining civic economy principles (relational, wellbeing-oriented) with protocol-based infrastructure (smart contracts, DIDs, automated governance).</td>
+        </tr>
+      </table>
+    </div>
+  </main>
+
+</div><!-- /view-methodology -->
+
+
+<footer class="site-footer">
+  <span class="footer-text">© 2026 <a href="https://digihub.li" target="_blank">DigiHub Liechtenstein</a> · European Digital Innovation Hub</span>
+  <span class="footer-text">Living Document · <a href="https://github.com/Qubeo/strategy-portal/issues" target="_blank">Contribute</a></span>
+</footer>
+
+
+<script>
+// =========== WEBGL SHADER ===========
+(function() {
+  const canvas = document.getElementById('shader-canvas');
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: true });
+  if (!gl) return;
+
+  function resize() {
+    canvas.width = window.innerWidth * 0.5;
+    canvas.height = window.innerHeight * 0.5;
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const vs = `attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}`;
+  const fs = `
+    precision mediump float;
+    uniform float t;
+    uniform vec2 r;
+    vec3 mod289(vec3 x){return x-floor(x*(1./289.))*289.;}
+    vec2 mod289(vec2 x){return x-floor(x*(1./289.))*289.;}
+    vec3 permute(vec3 x){return mod289(((x*34.)+1.)*x);}
+    float snoise(vec2 v){
+      const vec4 C=vec4(.211324865405187,.366025403784439,-.577350269189626,.024390243902439);
+      vec2 i=floor(v+dot(v,C.yy));
+      vec2 x0=v-i+dot(i,C.xx);
+      vec2 i1;i1=(x0.x>x0.y)?vec2(1,0):vec2(0,1);
+      vec4 x12=x0.xyxy+C.xxzz;x12.xy-=i1;
+      i=mod289(i);
+      vec3 p2=permute(permute(i.y+vec3(0,i1.y,1.))+i.x+vec3(0,i1.x,1.));
+      vec3 m=max(.5-vec3(dot(x0,x0),dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)),0.);
+      m=m*m;m=m*m;
+      vec3 x=2.*fract(p2*C.www)-1.;
+      vec3 h=abs(x)-.5;
+      vec3 ox=floor(x+.5);
+      vec3 a0=x-ox;
+      m*=1.79284291400159-.85373472095314*(a0*a0+h*h);
+      vec3 g;g.x=a0.x*x0.x+h.x*x0.y;g.yz=a0.yz*x12.xz+h.yz*x12.yw;
+      return 130.*dot(m,g);
+    }
+    void main(){
+      vec2 uv=gl_FragCoord.xy/r;
+      float n=0.;
+      n+=snoise(uv*2.2+t*0.04)*0.5;
+      n+=snoise(uv*4.5-t*0.06)*0.25;
+      n+=snoise(uv*8.0+t*0.03)*0.125;
+      n=n*0.5+0.5;
+      vec3 c1=vec3(0.04,0.06,0.1);
+      vec3 c2=vec3(0.05,0.45,0.42);
+      vec3 c3=vec3(0.02,0.03,0.06);
+      vec3 col=mix(c1,c2,smoothstep(0.35,0.65,n));
+      col=mix(col,c3,smoothstep(0.6,0.9,1.-uv.y));
+      float line=abs(fract(n*8.)-0.5)*2.;
+      line=smoothstep(0.92,0.98,line);
+      col+=vec3(0.08,0.72,0.66)*line*0.06;
+      gl_FragColor=vec4(col,1);
+    }
+  `;
+
+  function makeShader(src, type) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, makeShader(vs, gl.VERTEX_SHADER));
+  gl.attachShader(prog, makeShader(fs, gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+  const pLoc = gl.getAttribLocation(prog, 'p');
+  gl.enableVertexAttribArray(pLoc);
+  gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
+
+  const tLoc = gl.getUniformLocation(prog, 't');
+  const rLoc = gl.getUniformLocation(prog, 'r');
+  let startTime = Date.now();
+
+  function draw() {
+    gl.uniform1f(tLoc, (Date.now() - startTime) * 0.001);
+    gl.uniform2f(rLoc, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+
+// =========== SCROLL PROGRESS & HEADER ===========
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('scrollProgress').style.width = (scrollTop / docHeight * 100) + '%';
+  document.getElementById('siteHeader').classList.toggle('scrolled', scrollTop > 60);
+});
+
+
+// =========== VIEW SWITCHING ===========
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.view-container').forEach(v => v.classList.add('hidden'));
+    document.getElementById('view-' + tab.dataset.view).classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+
+// =========== REVEAL ON SCROLL ===========
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+// =========== SECTION LOADER ===========
+const STATUS = {
+  'draft':       { cls: 'status-draft',       label: 'Draft' },
+  'in-progress': { cls: 'status-in-progress', label: 'In progress' },
+  'outline':     { cls: 'status-outline',     label: 'Outline' }
+};
+
+function buildView(groups, container) {
+  groups.forEach(group => {
+    const groupEl = document.createElement('div');
+    groupEl.className = 'section-group reveal';
+    groupEl.innerHTML = `
+      <div class="section-group-header">
+        <span class="section-number">${group.label}</span>
+        <h2 class="section-group-title">${group.title}</h2>
+      </div>`;
+
+    group.sections.forEach(s => {
+      const st = STATUS[s.status] || STATUS.outline;
+      const div = document.createElement('div');
+      div.className = 'collapsible';
+      div.innerHTML = `
+        <button class="collapsible-trigger">
+          <span class="collapsible-icon">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </span>
+          <div class="collapsible-header">
+            <div class="collapsible-title">${s.title}</div>
+            <div class="collapsible-preview">${s.preview}</div>
+          </div>
+          <span class="collapsible-status ${st.cls}">${st.label}</span>
+        </button>
+        <div class="collapsible-body">
+          <div class="collapsible-content" data-file="${s.file}"></div>
+        </div>`;
+
+      div.querySelector('.collapsible-trigger').addEventListener('click', () => {
+        div.classList.toggle('open');
+        const content = div.querySelector('.collapsible-content');
+        if (div.classList.contains('open') && !content.dataset.loaded) {
+          fetch('sections/' + content.dataset.file)
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+            .then(md => {
+              content.innerHTML = marked.parse(md);
+              const editUrl = 'https://github.com/Qubeo/strategy-portal/edit/draft/docs/sections/' + content.dataset.file;
+              content.insertAdjacentHTML('beforeend',
+                `<a class="edit-link" href="${editUrl}" target="_blank">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit on GitHub (draft)
+                </a>`
+              );
+              content.dataset.loaded = '1';
+            })
+            .catch(() => {
+              content.innerHTML = '<p style="color:var(--slate-600);font-style:italic;font-size:0.85rem;">Content not yet available.</p>';
+            });
+        }
+      });
+
+      groupEl.appendChild(div);
+    });
+
+    container.appendChild(groupEl);
+    revealObserver.observe(groupEl);
+  });
+}
+
+fetch('sections/manifest.json')
+  .then(r => r.json())
+  .then(manifest => {
+    buildView(manifest.paper.groups, document.getElementById('paper-sections'));
+    buildView(manifest.methodology.groups, document.getElementById('methodology-sections'));
+  })
+  .catch(err => console.error('Failed to load manifest:', err));
+</script>
+
+</body>
+</html>
